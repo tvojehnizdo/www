@@ -1,11 +1,5 @@
-
-# Node, cache, systémové a editorové soubory
-node_modules/
-.env
 .DS_Store
-.vscode/
-.idea/
-*.log
-.cache/
-dist/
-build/
+node_modules
+.env
+.vscode
+.idea

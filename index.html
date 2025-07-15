@@ -3,15 +3,16 @@
 <html lang="cs">
 <head>
   <meta charset="UTF-8" />
-  <title>Tvoje Hnízdo – Vizualizace domu</title>
+  <title>Konfigurátor – Tvoje Hnízdo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="favicon.ico" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header>
     <img src="logo.png" class="logo" />
-    <h1>Tvoje Hnízdo – Konfigurátor</h1>
-    <p class="motto">Zvolte si svůj domov. S vizualizací v reálném čase.</p>
+    <h1>Konfigurátor – Tvoje Hnízdo</h1>
+    <p class="motto">Domov, který si zvolíte. Jednoduše a na míru.</p>
   </header>
   <main>
     <form id="configForm">
@@ -25,7 +26,6 @@
         </div>
         <input type="hidden" id="shape" value="obdelnik" />
       </section>
-
       <section>
         <h2>2. Typ střechy</h2>
         <select id="roof" onchange="renderVisualization()">
@@ -35,11 +35,58 @@
           <option value="plochá">Plochá</option>
         </select>
       </section>
-
       <section>
-        <h2>3. Vizualizace</h2>
+        <h2>3. Dispozice a plocha</h2>
+        <select id="layout">
+          <option value="2+kk">2+kk</option>
+          <option value="3+kk">3+kk</option>
+          <option value="4+kk">4+kk</option>
+        </select>
+        <input type="range" id="area" min="30" max="200" value="80" oninput="updateArea()" />
+        <p><strong><span id="areaValue">80</span> m²</strong></p>
+      </section>
+      <section>
+        <h2>4. Terasa</h2>
+        <label><input type="checkbox" id="terasa" onchange="toggleTerasa()" /> Chci terasu</label>
+        <div id="terasaOptions" style="display:none">
+          <label>Velikost: <input type="range" id="terasaArea" min="5" max="50" value="10" oninput="updateTerasa()" /></label>
+          <p><span id="terasaValue">10</span> m²</p>
+          <label><input type="checkbox" id="zastreseni" /> Zastřešená terasa</label>
+        </div>
+      </section>
+      <section>
+        <h2>5. Elektroinstalace</h2>
+        <select id="electro">
+          <option value="zaklad">Základní</option>
+          <option value="chytra">Připraveno na chytrou domácnost</option>
+          <option value="plne_chytra">Plně chytrá domácnost</option>
+        </select>
+      </section>
+      <section>
+        <h2>6. Typ dokončení</h2>
+        <select id="dokonceni">
+          <option value="hruba">Hrubá stavba</option>
+          <option value="dokonceni">K dokončení</option>
+          <option value="klic">Na klíč</option>
+        </select>
+      </section>
+      <section>
+        <h2>7. Vizualizace</h2>
         <div id="visualBox">🖼️ Zde se zobrazí dům podle výběru</div>
-        <button type="button" class="btn" onclick="renderVisualization()">🔄 Aktualizovat vizualizaci</button>
+      </section>
+      <section>
+        <h2>8. Kontaktní údaje</h2>
+        <input type="text" id="jmeno" placeholder="Jméno a příjmení" required />
+        <input type="email" id="email" placeholder="E-mail" required />
+        <input type="tel" id="telefon" placeholder="Telefon" />
+        <input type="text" id="okres" placeholder="Okres" />
+        <input type="date" id="termin" />
+      </section>
+      <section>
+        <h2>9. Rekapitulace</h2>
+        <div id="summaryBox">Zde se zobrazí rekapitulace</div>
+        <button type="button" onclick="generateSummary()">💰 Spočítat cenu</button>
+        <button type="button" onclick="sendForm()">📧 Odeslat poptávku</button>
       </section>
     </form>
   </main>
