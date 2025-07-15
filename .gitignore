@@ -1,16 +1,11 @@
 
-# Node modules a závislosti (i když zde nejsou, pro jistotu)
+# Node, cache, systémové a editorové soubory
 node_modules/
 .env
-*.log
-
-# Editor a OS specifické
+.DS_Store
 .vscode/
 .idea/
-.DS_Store
-Thumbs.db
-
-# Build/Cache/Temp
+*.log
+.cache/
 dist/
 build/
-.cache/

@@ -1,39 +1,25 @@
 
-# 🏠 Tvoje Hnízdo – Konfigurátor domu
+# 🏠 Tvoje Hnízdo – Vizualizační konfigurátor domu
 
-Tento konfigurátor slouží k výběru a nacenění montovaného domu podle individuálních preferencí zákazníka.
+Tento konfigurátor umožňuje zvolit tvar a typ střechy domu a ihned vidět vizualizaci pomocí SVG.
 
-## ✅ Funkce
-- Výběr tvaru domu (Obdélník, L, T, U)
-- Dispozice (2+kk až 5+kk)
-- Plocha domu (slider 30–200 m²)
-- Terasa a zastřešení (volitelné)
-- Interiér (počet WC, koupelna)
-- Elektroinstalace (základní / chytrá domácnost)
-- Kontaktní údaje (včetně okresu a termínu)
-- Rekapitulace s cenou
-- Export do PDF
-- Odeslání poptávky e-mailem (EmailJS – připraveno)
+## ✨ Funkce
+- Výběr tvaru domu: Obdélník, L, T, U
+- Výběr typu střechy: Sedlová, Valbová, Pultová, Plochá
+- SVG vizualizace domu se vykresluje v reálném čase
+- Styl Tvoje Hnízdo (barvy, logo, responzivní design)
 
-## 📦 Struktura
-```
-index.html         # Hlavní stránka konfigurátoru
-style.css          # Vzhled
-script.js          # Logika výpočtu, PDF, EmailJS
-.gitignore         # Git ignorace
-README.md          # Tento soubor
-```
+## 📁 Struktura
+- `index.html` – hlavní stránka konfigurátoru
+- `style.css` – vzhled
+- `script.js` – logika pro vizualizaci
+- `logo.png` – logo projektu
+- `.gitignore` – git ignorace běžných souborů
+- `README.md` – tento soubor
 
 ## 🚀 Nasazení
-1. Nahraj celý projekt na GitHub
-2. Aktivuj GitHub Pages (root, branch main)
-3. Nebo nahraj na Vercel
-
-## ✉️ EmailJS nastavení
-1. Vytvoř účet na https://emailjs.com
-2. Získej Public Key a vlož jej do `script.js`
-3. Vytvoř šablonu s ID např. `template_xxx`
-
----
+1. Nahraj do GitHub repozitáře
+2. Aktivuj GitHub Pages (`index.html` v rootu)
+3. Alternativně můžeš použít Vercel nebo Netlify
 
 MIT License © tvojehnizdo.cz
