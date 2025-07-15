@@ -3,92 +3,43 @@
 <html lang="cs">
 <head>
   <meta charset="UTF-8" />
-  <title>Konfigurátor – Tvoje Hnízdo</title>
+  <title>Tvoje Hnízdo – Vizualizace domu</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="icon" href="favicon.ico" />
   <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3.2.0/dist/email.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
   <header>
     <img src="logo.png" class="logo" />
-    <h1>Tvoje Hnízdo – Konfigurátor domu</h1>
-    <p class="motto">Domov, který si zvolíte. Jednoduše a na míru.</p>
+    <h1>Tvoje Hnízdo – Konfigurátor</h1>
+    <p class="motto">Zvolte si svůj domov. S vizualizací v reálném čase.</p>
   </header>
   <main>
-    <form onsubmit="generateSummary(); return false;">
+    <form id="configForm">
       <section>
         <h2>1. Tvar domu</h2>
         <div class="shape-options">
-          <div class="shape" onclick="selectShape('obdelnik')" id="shape-obdelnik">▭<br>Obdélník</div>
+          <div class="shape selected" onclick="selectShape('obdelnik')" id="shape-obdelnik">▭<br>Obdélník</div>
           <div class="shape" onclick="selectShape('L')" id="shape-L">⅃<br>L</div>
           <div class="shape" onclick="selectShape('T')" id="shape-T">⊥<br>T</div>
           <div class="shape" onclick="selectShape('U')" id="shape-U">⊔<br>U</div>
         </div>
         <input type="hidden" id="shape" value="obdelnik" />
       </section>
+
       <section>
-        <h2>2. Dispozice</h2>
-        <select id="layout">
-          <option value="2+kk">2+kk</option>
-          <option value="3+kk">3+kk</option>
-          <option value="4+kk">4+kk</option>
-          <option value="5+kk">5+kk</option>
+        <h2>2. Typ střechy</h2>
+        <select id="roof" onchange="renderVisualization()">
+          <option value="sedlova">Sedlová</option>
+          <option value="valbova">Valbová</option>
+          <option value="pultova">Pultová</option>
+          <option value="plochá">Plochá</option>
         </select>
       </section>
+
       <section>
-        <h2>3. Plocha domu</h2>
-        <input type="range" id="area" min="30" max="200" value="80" oninput="updateArea()" />
-        <p><strong><span id="areaValue">80</span> m²</strong></p>
-      </section>
-      <section>
-        <h2>4. Terasa</h2>
-        <label><input type="checkbox" id="terraceToggle" onchange="toggleTerrace()"> Chci terasu</label>
-        <div id="terraceSettings" style="display:none;">
-          <label>Velikost terasy: <span id="terraceSizeValue">8</span> m²</label>
-          <input type="range" id="terraceSize" min="4" max="50" value="8" oninput="updateTerraceSize()" />
-          <label><input type="checkbox" id="terraceRoof"> Zastřešit terasu</label>
-        </div>
-      </section>
-      <section>
-        <h2>5. Interiér</h2>
-        <label>Počet WC:</label>
-        <select id="wcCount">
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-        </select>
-        <label>Koupelna:</label>
-        <select id="bathroom">
-          <option value="sprcha">Sprcha</option>
-          <option value="vana">Vana</option>
-          <option value="sprcha + vana">Sprcha + vana</option>
-        </select>
-      </section>
-      <section>
-        <h2>6. Elektroinstalace</h2>
-        <select id="electro">
-          <option value="zaklad">Základní rozvod</option>
-          <option value="chytra">Chytrá domácnost</option>
-        </select>
-      </section>
-      <section>
-        <h2>7. Kontaktní údaje</h2>
-        <input type="text" id="name" placeholder="Jméno a příjmení" required />
-        <input type="email" id="email" placeholder="E-mail" required />
-        <input type="tel" id="phone" placeholder="Telefon" required />
-        <input type="text" id="region" placeholder="Okres" required />
-        <label>Požadovaný termín (nepovinné):</label>
-        <input type="date" id="date" />
-      </section>
-      <section>
-        <h2>8. Rekapitulace</h2>
-        <div id="summaryBox"></div>
-        <div id="visualBox">🖼️ Vizualizace domu zde (dle výběru)</div>
-        <button type="button" class="btn" onclick="sendEmail()">✉️ Odeslat e-mailem</button>
-        <button type="button" class="btn" onclick="exportPDF()">📄 Export do PDF</button>
+        <h2>3. Vizualizace</h2>
+        <div id="visualBox">🖼️ Zde se zobrazí dům podle výběru</div>
+        <button type="button" class="btn" onclick="renderVisualization()">🔄 Aktualizovat vizualizaci</button>
       </section>
     </form>
   </main>

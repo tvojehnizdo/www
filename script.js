@@ -1,62 +1,42 @@
 
-function updateArea() {
-  document.getElementById("areaValue").textContent = document.getElementById("area").value;
-}
-function toggleTerrace() {
-  document.getElementById("terraceSettings").style.display =
-    document.getElementById("terraceToggle").checked ? "block" : "none";
-}
-function updateTerraceSize() {
-  document.getElementById("terraceSizeValue").textContent = document.getElementById("terraceSize").value;
-}
 function selectShape(shape) {
   document.getElementById("shape").value = shape;
   document.querySelectorAll(".shape").forEach(el => el.classList.remove("selected"));
   document.getElementById("shape-" + shape).classList.add("selected");
+  renderVisualization();
 }
-function generateSummary() {
-  const layout = document.getElementById("layout").value;
-  const area = parseInt(document.getElementById("area").value);
-  const electro = document.getElementById("electro").value;
-  const wc = document.getElementById("wcCount").value;
-  const bathroom = document.getElementById("bathroom").value;
-  const terrace = document.getElementById("terraceToggle").checked;
-  const terraceSize = terrace ? parseInt(document.getElementById("terraceSize").value) : 0;
-  const terraceRoof = document.getElementById("terraceRoof").checked;
 
-  let price = area * (electro === "chytra" ? 28000 : 23000);
-  if (terrace) price += terraceSize * 2500;
+function renderVisualization() {
+  const shape = document.getElementById("shape").value;
+  const roof = document.getElementById("roof").value;
+  let svgShape = '';
+  let roofSvg = '';
 
-  document.getElementById("summaryBox").innerHTML = `
-    <p>Dispozice: <strong>${layout}</strong></p>
-    <p>Plocha: <strong>${area} m²</strong></p>
-    <p>Elektro: <strong>${electro}</strong></p>
-    <p>Počet WC: <strong>${wc}</strong></p>
-    <p>Koupelna: <strong>${bathroom}</strong></p>
-    ${terrace ? `<p>Terasa: ${terraceSize} m² ${terraceRoof ? '(zastřešená)' : ''}</p>` : ''}
-    <p><strong>Cena: ${price.toLocaleString()} Kč</strong></p>
+  if (shape === "obdelnik") {
+    svgShape = '<rect x="20" y="40" width="160" height="80" fill="#81c784" />';
+  } else if (shape === "L") {
+    svgShape = '<path d="M20 40 H100 V100 H180 V120 H20 Z" fill="#81c784"/>';
+  } else if (shape === "T") {
+    svgShape = '<path d="M20 40 H180 V60 H120 V120 H80 V60 H20 Z" fill="#81c784"/>';
+  } else if (shape === "U") {
+    svgShape = '<path d="M20 40 H60 V100 H140 V40 H180 V120 H20 Z" fill="#81c784"/>';
+  }
+
+  if (roof === "sedlova") {
+    roofSvg = '<polygon points="20,40 100,10 180,40" fill="#4caf50" />';
+  } else if (roof === "valbova") {
+    roofSvg = '<polygon points="20,40 100,10 180,40 160,40 100,20 40,40" fill="#4caf50" />';
+  } else if (roof === "pultova") {
+    roofSvg = '<polygon points="20,40 180,30 180,40 20,50" fill="#4caf50" />';
+  } else if (roof === "plochá") {
+    roofSvg = '<rect x="20" y="30" width="160" height="8" fill="#4caf50" />';
+  }
+
+  document.getElementById("visualBox").innerHTML = `
+    <svg width="200" height="140" xmlns="http://www.w3.org/2000/svg">
+      ${roofSvg}
+      ${svgShape}
+    </svg>
+    <p style="font-size: 0.9em; color: #555;">Tvar: ${shape.toUpperCase()}, Střecha: ${roof}</p>
   `;
-}
-function exportPDF() {
-  const { jsPDF } = window.jspdf;
-  html2canvas(document.getElementById("summaryBox")).then(canvas => {
-    const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF();
-    pdf.text("Rekapitulace domu", 10, 10);
-    pdf.addImage(imgData, 'PNG', 10, 20, 180, 0);
-    pdf.save("rekapitulace.pdf");
-  });
-}
-function sendEmail() {
-  emailjs.init("user_xxxxxxxxxxxxxxxxx"); // <- vlož vlastní public key
-  const params = {
-    name: document.getElementById("name").value,
-    email: document.getElementById("email").value,
-    phone: document.getElementById("phone").value,
-    region: document.getElementById("region").value,
-    date: document.getElementById("date").value,
-    summary: document.getElementById("summaryBox").innerText
-  };
-  emailjs.send("default_service", "template_xxx", params)
-    .then(() => alert("Odesláno!"), err => alert("Chyba: " + JSON.stringify(err)));
 }
