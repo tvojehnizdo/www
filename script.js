@@ -2,56 +2,61 @@
 function updateArea() {
   document.getElementById("areaValue").textContent = document.getElementById("area").value;
 }
+function toggleTerrace() {
+  document.getElementById("terraceSettings").style.display =
+    document.getElementById("terraceToggle").checked ? "block" : "none";
+}
 function updateTerraceSize() {
   document.getElementById("terraceSizeValue").textContent = document.getElementById("terraceSize").value;
-}
-function toggleTerrace() {
-  document.getElementById("terraceSettings").style.display = document.getElementById("terraceToggle").checked ? "block" : "none";
 }
 function selectShape(shape) {
   document.getElementById("shape").value = shape;
   document.querySelectorAll(".shape").forEach(el => el.classList.remove("selected"));
   document.getElementById("shape-" + shape).classList.add("selected");
 }
-
 function generateSummary() {
   const layout = document.getElementById("layout").value;
   const area = parseInt(document.getElementById("area").value);
-  const finish = document.getElementById("finish").value;
+  const electro = document.getElementById("electro").value;
+  const wc = document.getElementById("wcCount").value;
+  const bathroom = document.getElementById("bathroom").value;
   const terrace = document.getElementById("terraceToggle").checked;
   const terraceSize = terrace ? parseInt(document.getElementById("terraceSize").value) : 0;
   const terraceRoof = document.getElementById("terraceRoof").checked;
-  const wc = document.getElementById("wcCount").value;
-  const bathroom = document.getElementById("bathroom").value;
-  const flooring = document.getElementById("flooring").value;
-  const electro = document.getElementById("electro").value;
-  const shape = document.getElementById("shape").value;
 
-  let pricePerM2 = finish === "hrubá stavba" ? 16500 : finish === "k dokončení" ? 24500 : 30500;
-  let housePrice = area * pricePerM2;
-  let terracePrice = terrace ? terraceSize * 2500 : 0;
-  let electroPrice = electro === "priprava" ? 60000 : electro === "chytra" ? 165000 : 0;
-  let totalPrice = housePrice + terracePrice + electroPrice;
+  let price = area * (electro === "chytra" ? 28000 : 23000);
+  if (terrace) price += terraceSize * 2500;
 
   document.getElementById("summaryBox").innerHTML = `
-    <p><strong>Tvar domu:</strong> ${shape}</p>
-    <p><strong>Dispozice:</strong> ${layout}</p>
-    <p><strong>Plocha:</strong> ${area} m²</p>
-    <p><strong>Stupeň dokončení:</strong> ${finish}</p>
-    <p><strong>Cena za dům:</strong> ${housePrice.toLocaleString()} Kč</p>
-    ${terrace ? `<p><strong>Terasa:</strong> ${terraceSize} m² ${terraceRoof ? "(zastřešená)" : ""}</p>` : ""}
-    ${terrace ? `<p><strong>Příplatek za terasu:</strong> ${terracePrice.toLocaleString()} Kč</p>` : ""}
-    <p><strong>Počet WC:</strong> ${wc}</p>
-    <p><strong>Koupelna:</strong> ${bathroom}</p>
-    <p><strong>Elektroinstalace:</strong> ${electro}</p>
-    <p><strong>Příplatek za elektro:</strong> ${electroPrice.toLocaleString()} Kč</p>
-    <h3>Celková cena: ${totalPrice.toLocaleString()} Kč</h3>
+    <p>Dispozice: <strong>${layout}</strong></p>
+    <p>Plocha: <strong>${area} m²</strong></p>
+    <p>Elektro: <strong>${electro}</strong></p>
+    <p>Počet WC: <strong>${wc}</strong></p>
+    <p>Koupelna: <strong>${bathroom}</strong></p>
+    ${terrace ? `<p>Terasa: ${terraceSize} m² ${terraceRoof ? '(zastřešená)' : ''}</p>` : ''}
+    <p><strong>Cena: ${price.toLocaleString()} Kč</strong></p>
   `;
 }
-
-document.addEventListener("DOMContentLoaded", () => {
-  updateArea();
-  updateTerraceSize();
-  toggleTerrace();
-  selectShape("obdelnik");
-});
+function exportPDF() {
+  const { jsPDF } = window.jspdf;
+  html2canvas(document.getElementById("summaryBox")).then(canvas => {
+    const imgData = canvas.toDataURL("image/png");
+    const pdf = new jsPDF();
+    pdf.text("Rekapitulace domu", 10, 10);
+    pdf.addImage(imgData, 'PNG', 10, 20, 180, 0);
+    pdf.save("rekapitulace.pdf");
+  });
+}
+function sendEmail() {
+  emailjs.init("user_xxxxxxxxxxxxxxxxx"); // <- vlož vlastní public key
+  const params = {
+    name: document.getElementById("name").value,
+    email: document.getElementById("email").value,
+    phone: document.getElementById("phone").value,
+    region: document.getElementById("region").value,
+    date: document.getElementById("date").value,
+    summary: document.getElementById("summaryBox").innerText
+  };
+  emailjs.send("default_service", "template_xxx", params)
+    .then(() => alert("Odesláno!"), err => alert("Chyba: " + JSON.stringify(err)));
+}
