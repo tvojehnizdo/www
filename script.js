@@ -1,94 +1,65 @@
 
-let currentStep = 1;
-
-function nextStep() {
-  document.getElementById('step' + currentStep).style.display = 'none';
-  currentStep++;
-  document.getElementById('step' + currentStep).style.display = 'block';
+function updateArea() {
+  document.getElementById("areaValue").textContent = document.getElementById("area").value;
 }
-
-function prevStep() {
-  document.getElementById('step' + currentStep).style.display = 'none';
-  currentStep--;
-  document.getElementById('step' + currentStep).style.display = 'block';
+function updateTerasa() {
+  document.getElementById("terasaValue").textContent = document.getElementById("terasaArea").value;
 }
-
-function updateAreaDisplay() {
-  const value = document.getElementById("area").value;
-  document.getElementById("areaValue").textContent = value;
+function toggleTerasa() {
+  const show = document.getElementById("terasa").checked;
+  document.getElementById("terasaOptions").style.display = show ? "block" : "none";
 }
-
-function getRoomCount(layout) {
-  const [rooms, type] = layout.split("+");
-  return parseInt(rooms) + (type === "kk" ? 1 : 0);
+function selectShape(shape) {
+  document.getElementById("shape").value = shape;
+  document.querySelectorAll(".shape").forEach(el => el.classList.remove("selected"));
+  document.getElementById("shape-" + shape).classList.add("selected");
+  renderVisualization();
 }
+function renderVisualization() {
+  const shape = document.getElementById("shape").value;
+  const roof = document.getElementById("roof").value;
+  let svg = '';
+  let roofSvg = '';
 
-function renderSVGRooms() {
-  const layout = document.getElementById("layout").value;
-  const rooms = getRoomCount(layout);
-  const cols = Math.ceil(Math.sqrt(rooms));
-  const rows = Math.ceil(rooms / cols);
-  const cellWidth = 180 / cols;
-  const cellHeight = 100 / rows;
+  if (shape === "obdelnik") svg = '<rect x="20" y="50" width="160" height="80" fill="#81c784"/>';
+  else if (shape === "L") svg = '<path d="M20 50 H100 V110 H180 V130 H20 Z" fill="#81c784"/>';
+  else if (shape === "T") svg = '<path d="M20 50 H180 V70 H120 V130 H80 V70 H20 Z" fill="#81c784"/>';
+  else if (shape === "U") svg = '<path d="M20 50 H60 V110 H140 V50 H180 V130 H20 Z" fill="#81c784"/>';
 
-  let svg = "";
-  let roomIndex = 0;
+  if (roof === "sedlova") roofSvg = '<polygon points="20,50 100,10 180,50" fill="#4caf50"/>';
+  else if (roof === "valbova") roofSvg = '<polygon points="20,50 100,10 180,50 160,50 100,20 40,50" fill="#4caf50"/>';
+  else if (roof === "pultova") roofSvg = '<polygon points="20,50 180,40 180,50 20,60" fill="#4caf50"/>';
+  else if (roof === "plochá") roofSvg = '<rect x="20" y="40" width="160" height="8" fill="#4caf50"/>';
 
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      if (roomIndex >= rooms) break;
-      const x = 10 + c * cellWidth;
-      const y = 20 + r * cellHeight;
-      const roomName = roomIndex === 0 ? "Obývák + KK" : "Pokoj " + roomIndex;
-      svg += `<rect x="\${x}" y="\${y}" width="\${cellWidth}" height="\${cellHeight}" fill="#e0f7fa" stroke="#00695c" stroke-width="1"/>`;
-      svg += `<text x="\${x + 4}" y="\${y + 15}" font-size="10" fill="#004d40">\${roomName}</text>`;
-      roomIndex++;
-    }
-  }
-
-  document.getElementById("visualBox").innerHTML = `<svg width="200" height="140">\${svg}</svg>`;
+  document.getElementById("visualBox").innerHTML = `
+    <svg width="200" height="140">${roofSvg}${svg}</svg>
+  `;
 }
 
 function generateSummary() {
-  const plocha = parseInt(document.getElementById("area").value);
-  const vybaveni = [];
-  if (document.getElementById("kuchyne").checked) vybaveni.push("kuchyň");
-  if (document.getElementById("vana").checked) vybaveni.push("vana");
-  if (document.getElementById("sprcha").checked) vybaveni.push("sprcha");
-  if (document.getElementById("skrine").checked) vybaveni.push("vestavné skříně");
+  const area = parseInt(document.getElementById("area").value);
+  const terasa = document.getElementById("terasa").checked;
+  const terasaArea = terasa ? parseInt(document.getElementById("terasaArea").value) : 0;
+  const zastreseni = terasa && document.getElementById("zastreseni").checked;
+  const dokonceni = document.getElementById("dokonceni").value;
+  const electro = document.getElementById("electro").value;
 
-  const deska = document.getElementById("zaklad").value;
-  const dispozice = document.getElementById("layout").value;
+  let basePrice = dokonceni === "hruba" ? 16500 : dokonceni === "dokonceni" ? 24500 : 30500;
+  let price = area * basePrice;
+  if (terasa) price += terasaArea * 2500;
+  if (electro === "chytra") price += 60000;
+  else if (electro === "plne_chytra") price += 165000;
 
-  let basePrice = 25000;
-  let price = plocha * basePrice;
-  if (vybaveni.includes("kuchyň")) price += 100000;
-  if (vybaveni.includes("vana")) price += 30000;
-  if (vybaveni.includes("sprcha")) price += 20000;
-  if (vybaveni.includes("vestavné skříně")) price += 40000;
-
-  let deskaCena = deska === "beton" ? 0 : deska === "vruty" ? -50000 : 20000;
-  price += deskaCena;
-
-  const summary = `
-    <p><strong>Dispozice:</strong> \${dispozice}</p>
-    <p><strong>Plocha:</strong> \${plocha} m²</p>
-    <p><strong>Vybavení:</strong> \${vybaveni.join(", ") || "Bez výběru"}</p>
-    <p><strong>Základová deska:</strong> \${deska}</p>
-    <p><strong>Celková cena:</strong> \${price.toLocaleString()} Kč</p>
+  document.getElementById("summaryBox").innerHTML = `
+    <p><strong>Cena domu: ${price.toLocaleString()} Kč</strong></p>
+    <p>Dispozice: ${document.getElementById("layout").value}, ${area} m²</p>
+    ${terasa ? `<p>Terasa: ${terasaArea} m² ${zastreseni ? "(zastřešená)" : ""}</p>` : ""}
+    <p>Střecha: ${document.getElementById("roof").value}</p>
+    <p>Elektro: ${electro}</p>
+    <p>Dokončení: ${dokonceni}</p>
   `;
-  document.getElementById("summaryBox").innerHTML = summary;
-  renderSVGRooms();
 }
 
-function submitForm() {
-  alert("Odesláno! (propojení EmailJS + Google Sheets připraveno)");
-}
-
-function exportPDF() {
-  window.jsPDF = window.jspdf.jsPDF;
-  const doc = new jsPDF();
-  doc.text("Rekapitulace domu Tvoje Hnízdo", 10, 10);
-  doc.fromHTML(document.getElementById("summaryBox").innerHTML, 10, 20);
-  doc.save("rekapitulace.pdf");
+function sendForm() {
+  alert("Odesláno! (propojení s EmailJS připraveno)");
 }

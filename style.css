@@ -1,53 +1,68 @@
 
 body {
   font-family: 'Segoe UI', sans-serif;
-  background: #f2f7fb;
+  background: #eaf6fb;
   margin: 0;
-  color: #333;
+  color: #2c3e50;
 }
 header {
   background: #4caf50;
   color: white;
   text-align: center;
-  padding: 1rem;
+  padding: 1.5rem;
 }
 .logo {
-  height: 60px;
+  height: 50px;
 }
 main {
   max-width: 800px;
   margin: 2rem auto;
-  background: white;
+  background: #fff;
   padding: 2rem;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
-.step {
-  display: none;
+section {
+  margin-bottom: 2rem;
 }
-.step.active {
-  display: block;
+.shape-options {
+  display: flex;
+  gap: 1rem;
+}
+.shape {
+  flex: 1;
+  border: 2px solid #ccc;
+  padding: 1rem;
+  text-align: center;
+  border-radius: 6px;
+  cursor: pointer;
+  background: #f9f9f9;
+}
+.shape.selected {
+  border-color: #4caf50;
+  background: #e0f2f1;
+}
+#visualBox {
+  border: 2px dashed #4caf50;
+  background: #f0fff4;
+  padding: 1rem;
+  text-align: center;
+  border-radius: 8px;
 }
 input, select {
   padding: 0.5rem;
-  margin: 0.5rem 0;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
   width: 100%;
-  border-radius: 4px;
   border: 1px solid #ccc;
+  border-radius: 4px;
 }
 button {
   background: #4caf50;
   color: white;
-  padding: 0.6rem 1.2rem;
   border: none;
-  border-radius: 4px;
-  margin: 0.5rem 0.5rem 0 0;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
   cursor: pointer;
-}
-#visualBox {
-  border: 1px dashed #4caf50;
-  padding: 1rem;
-  margin-top: 1rem;
-  background: #f1fff1;
-  text-align: center;
+  margin-right: 0.5rem;
 }
