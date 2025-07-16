@@ -1,1 +1,51 @@
-<!DOCTYPE html><html><head><title>Tvoje Hnízdo</title></head><body><h1>Probíhá obnova</h1></body></html>
+
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Konfigurátor – Tvoje Hnízdo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <img src="logo.png" alt="Tvoje Hnízdo" id="logo">
+        <h1>Konfigurátor – Tvoje Hnízdo</h1>
+        <p>Domov, který si zvolíte. Jednoduše a na míru.</p>
+    </header>
+
+    <main>
+        <section id="form-section">
+            <form id="configForm">
+                <div class="step">
+                    <h2>1. Tvar domu</h2>
+                    <div class="shape-buttons">
+                        <button type="button" class="shape" data-shape="obdelnik">▭<br>Obdélník</button>
+                        <button type="button" class="shape" data-shape="l">∟<br>L</button>
+                        <button type="button" class="shape" data-shape="t">⊥<br>T</button>
+                        <button type="button" class="shape" data-shape="u">∪<br>U</button>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <h2>2. Typ střechy</h2>
+                    <select id="roofType">
+                        <option value="sedlova">Sedlová</option>
+                        <option value="pultova">Pultová</option>
+                        <option value="valbova">Valbová</option>
+                        <option value="plocha">Plochá</option>
+                    </select>
+                </div>
+
+                <div class="step">
+                    <h2>3. Vizualizace půdorysu</h2>
+                    <div id="visualization">Zde se zobrazí dům podle výběru</div>
+                    <button type="button" onclick="updateVisualization()">Aktualizovat vizualizaci</button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
