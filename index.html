@@ -2,50 +2,103 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Konfigurátor – Tvoje Hnízdo</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Konfigurátor – Tvoje Hnízdo</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <header>
-        <img src="logo.png" alt="Tvoje Hnízdo" id="logo">
-        <h1>Konfigurátor – Tvoje Hnízdo</h1>
-        <p>Domov, který si zvolíte. Jednoduše a na míru.</p>
-    </header>
+  <header>
+    <img src="logo.png" alt="Logo Tvoje Hnízdo" class="logo" />
+    <h1>Konfigurátor – Tvoje Hnízdo</h1>
+    <p>Domov, který si zvolíte. Jednoduše a na míru.</p>
+  </header>
 
-    <main>
-        <section id="form-section">
-            <form id="configForm">
-                <div class="step">
-                    <h2>1. Tvar domu</h2>
-                    <div class="shape-buttons">
-                        <button type="button" class="shape" data-shape="obdelnik">▭<br>Obdélník</button>
-                        <button type="button" class="shape" data-shape="l">∟<br>L</button>
-                        <button type="button" class="shape" data-shape="t">⊥<br>T</button>
-                        <button type="button" class="shape" data-shape="u">∪<br>U</button>
-                    </div>
-                </div>
+  <main>
+    <section>
+      <h2>1. Tvar domu</h2>
+      <div class="shapes">
+        <button onclick="setShape('Obdélník')">Obdélník</button>
+        <button onclick="setShape('L')">L</button>
+        <button onclick="setShape('T')">T</button>
+        <button onclick="setShape('U')">U</button>
+      </div>
+    </section>
 
-                <div class="step">
-                    <h2>2. Typ střechy</h2>
-                    <select id="roofType">
-                        <option value="sedlova">Sedlová</option>
-                        <option value="pultova">Pultová</option>
-                        <option value="valbova">Valbová</option>
-                        <option value="plocha">Plochá</option>
-                    </select>
-                </div>
+    <section>
+      <h2>2. Typ střechy</h2>
+      <select id="roofType">
+        <option value="Sedlová">Sedlová</option>
+        <option value="Valbová">Valbová</option>
+        <option value="Pultová">Pultová</option>
+        <option value="Plochá">Plochá</option>
+      </select>
+    </section>
 
-                <div class="step">
-                    <h2>3. Vizualizace půdorysu</h2>
-                    <div id="visualization">Zde se zobrazí dům podle výběru</div>
-                    <button type="button" onclick="updateVisualization()">Aktualizovat vizualizaci</button>
-                </div>
-            </form>
-        </section>
-    </main>
+    <section>
+      <h2>3. Dispozice</h2>
+      <select id="dispozice" onchange="updateRooms()">
+        <option value="1">1+kk</option>
+        <option value="2">2+kk</option>
+        <option value="3">3+kk</option>
+        <option value="4">4+kk</option>
+        <option value="5">5+kk</option>
+        <option value="6">6+kk</option>
+        <option value="7">7+kk</option>
+      </select>
+    </section>
 
-    <script src="script.js"></script>
+    <section>
+      <h2>4. Plocha domu (m²)</h2>
+      <input type="range" id="area" min="20" max="300" value="100" oninput="updatePrice()" />
+      <span id="areaValue">100</span> m²
+    </section>
+
+    <section>
+      <h2>5. Terasa</h2>
+      <label><input type="checkbox" id="terasa" onchange="toggleTerasa()"> Chci terasu</label>
+      <div id="terasaOptions" style="display:none;">
+        <label>Velikost terasy: <input type="range" id="terasaSize" min="5" max="50" value="10" oninput="updatePrice()" /> <span id="terasaVal">10</span> m²</label>
+      </div>
+    </section>
+
+    <section>
+      <h2>6. Elektroinstalace</h2>
+      <select id="elektro" onchange="updatePrice()">
+        <option value="0">Základní rozvod</option>
+        <option value="60000">Připraveno na chytrou domácnost (+60 000 Kč)</option>
+        <option value="165000">Plně chytrá domácnost (+165 000 Kč)</option>
+      </select>
+    </section>
+
+    <section>
+      <h2>7. Shrnutí a cena</h2>
+      <div id="summary"></div>
+      <div id="price"></div>
+    </section>
+
+    <section>
+      <h2>8. Kontaktní údaje</h2>
+      <form id="form">
+        <input type="text" placeholder="Jméno a příjmení" required><br />
+        <input type="email" placeholder="Email" required><br />
+        <input type="tel" placeholder="Telefon"><br />
+        <input type="text" placeholder="Okres"><br />
+        <input type="date" placeholder="Požadovaný termín"><br />
+        <button type="submit">Odeslat poptávku</button>
+      </form>
+    </section>
+
+    <section>
+      <h2>9. Vizualizace půdorysu</h2>
+      <svg id="vizualizace" width="300" height="200" style="border:1px dashed #aaa;"></svg>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Tvoje Hnízdo</p>
+  </footer>
+
+  <script src="script.js"></script>
 </body>
 </html>

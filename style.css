@@ -1,51 +1,42 @@
 
 body {
-    font-family: Arial, sans-serif;
-    background-color: #e9f7fc;
-    margin: 0;
-    padding: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: #eaf6fb;
+  margin: 0;
+  padding: 0;
 }
-
 header {
-    background-color: #43a047;
-    color: white;
-    text-align: center;
-    padding: 1rem;
+  background-color: #4CAF50;
+  color: white;
+  text-align: center;
+  padding: 1em;
 }
-
-#logo {
-    height: 60px;
-    margin-bottom: 0.5rem;
+.logo {
+  height: 60px;
 }
-
 main {
-    padding: 1rem;
+  padding: 2em;
 }
-
-.step {
-    margin-bottom: 2rem;
+section {
+  margin-bottom: 2em;
+  background: #fff;
+  padding: 1em;
+  border-radius: 10px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
 }
-
-.shape-buttons button {
-    font-size: 1.2rem;
-    margin: 0.5rem;
-    padding: 1rem;
-    border: 2px solid #ccc;
-    background-color: white;
-    cursor: pointer;
+button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px;
+  margin-top: 10px;
+  border: none;
+  cursor: pointer;
 }
-
-.shape-buttons button.selected {
-    border-color: #43a047;
-    background-color: #e0f2f1;
+footer {
+  text-align: center;
+  padding: 1em;
+  background: #ddd;
 }
-
-#visualization {
-    border: 2px dashed #aaa;
-    height: 200px;
-    background-color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #666;
+.shapes button {
+  margin-right: 10px;
 }
