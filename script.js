@@ -1,30 +1,15 @@
-
-document.querySelectorAll('.shape').forEach(button => {
-    button.addEventListener('click', () => {
-        document.querySelectorAll('.shape').forEach(b => b.classList.remove('selected'));
-        button.classList.add('selected');
-    });
-});
-
-function updateVisualization() {
-    const shape = document.querySelector('.shape.selected')?.dataset.shape || "obdelnik";
-    const roof = document.getElementById("roofType").value;
-
-    const viz = document.getElementById("visualization");
-    viz.innerHTML = `<svg width="150" height="150">
-        ${drawShape(shape)}
-    </svg><p>${roof.charAt(0).toUpperCase() + roof.slice(1)} střecha</p>`;
-}
-
-function drawShape(shape) {
-    switch (shape) {
-        case "l":
-            return '<rect x="0" y="0" width="100" height="50" fill="#b2dfdb"/><rect x="0" y="50" width="50" height="50" fill="#b2dfdb"/>';
-        case "t":
-            return '<rect x="25" y="0" width="100" height="50" fill="#b2dfdb"/><rect x="65" y="50" width="20" height="50" fill="#b2dfdb"/>';
-        case "u":
-            return '<rect x="0" y="0" width="100" height="25" fill="#b2dfdb"/><rect x="0" y="25" width="25" height="50" fill="#b2dfdb"/><rect x="75" y="25" width="25" height="50" fill="#b2dfdb"/>';
-        default:
-            return '<rect x="10" y="10" width="100" height="80" fill="#b2dfdb"/>';
-    }
-}
+let DATA=null; const $=s=>document.querySelector(s); const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const b64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+async function decrypt(password){const enc=window.ENCRYPTED;const base=await crypto.subtle.importKey('raw',new TextEncoder().encode(password),'PBKDF2',false,['deriveKey']);const key=await crypto.subtle.deriveKey({name:'PBKDF2',salt:b64(enc.salt),iterations:enc.iterations,hash:'SHA-256'},base,{name:'AES-GCM',length:256},false,['decrypt']);const raw=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64(enc.iv)},key,b64(enc.ct));return JSON.parse(new TextDecoder().decode(raw));}
+function unlock(){document.querySelector('#login').classList.add('hidden');document.querySelector('#app').classList.remove('hidden');document.querySelector('#updated').textContent='data ověřena '+DATA.meta.verified;buildNav();renderHome()}
+$('#loginForm').addEventListener('submit',async e=>{e.preventDefault();$('#loginMsg').textContent='Dešifruji lokálně v prohlížeči…';try{DATA=await decrypt($('#password').value);$('#password').value='';unlock()}catch(err){$('#loginMsg').textContent='Neplatné heslo'}});
+$('#logoutBtn').addEventListener('click',()=>{DATA=null;$('#content').innerHTML='';$('#dashboard').innerHTML='';$('#app').classList.add('hidden');$('#login').classList.remove('hidden');$('#loginMsg').textContent='Cockpit zamčen.'});
+function badge(s=''){const x=String(s).toUpperCase();let c=x.includes('KRIT')||x.includes('BLOCK')?'critical':x.includes('VYSOK')?'high':x.includes('OVĚŘ')||x.includes('RESOLVED')||x.includes('AKTIV')?'ok':x.includes('VERIFY')||x.includes('PARTIAL')||x.includes('OPEN')||x.includes('CONDITIONAL')?'verify':'locked';return `<span class="badge ${c}">${esc(s)}</span>`}
+function buildNav(){const groups=[['Přehled',[['home','CEO / Dnes'],['projects','Projekty'],['tasks','Úkoly'],['finance','Finance'],['approvals','Schválení']]],['Realizace',[['pnl','Project P&L'],['cash','Cashflow 13W'],['procurement','Procurement'],['changes','Vícepráce'],['daily','Daily Log']]],['Kontrola',[['risks','Rizika'],['validation','Validace'],['decisions','Rozhodnutí'],['vendors','Dodavatelé'],['system','System Health']]],['Firma',[['crm','CRM'],['modules','Všechny moduly']]]];let h='';for(const [g,items] of groups){h+=`<div class="nav-title" style="margin-top:16px">${g}</div>`;for(const [id,l] of items)h+=`<button class="nav-btn" data-id="${id}">${l}</button>`}$('#nav').innerHTML=h;document.querySelectorAll('.nav-btn').forEach(b=>b.onclick=()=>render(b.dataset.id));}
+function setActive(id){document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.id===id))}
+function kpi(label,val,sub=''){return `<div class="kpi"><div class="label">${label}</div><div class="value">${esc(val)}</div><div class="sub">${esc(sub)}</div></div>`}
+function renderHome(){setActive('home');const k=DATA.kpis;$('#dashboard').innerHTML=`<div class="kpis">${kpi('Kritické úkoly',k.criticalTasks,'živá fronta')}${kpi('Aktivní projekty',k.activeProjects,'ONE core')}${kpi('Schválení',k.pendingApprovals,'čeká na rozhodnutí')}${kpi('Kritická rizika',k.criticalRisks,'vyžaduje kontrolu')}${kpi('Podmíněná inkasa',k.conditionalInflows,'nejsou jistý cash')}</div>`;$('#content').innerHTML=`<div class="panel"><div class="panel-head"><div><h2>Ranní režim</h2><ol><li><b>CEO:</b> TOP priority, rizika, rozhodnutí.</li><li><b>Finance:</b> co přijde, co odejde, cash gate.</li><li><b>Projekty:</b> stav, blokace, další krok.</li><li><b>Obchod:</b> leady, nabídky, zálohy.</li><li><b>Lidé:</b> delegace a kapacita.</li></ol></div><div class="quick"><button class="b" onclick="render('home')">CEO / Dnes</button><button class="g" onclick="render('projects')">Projekty</button><button class="a" onclick="render('finance')">Finance</button><button class="d" onclick="render('tasks')">Úkoly</button></div></div></div><div class="grid2"><div class="panel"><h2>🔴 TEĎ</h2><div class="list">${DATA.today.map(x=>`<div class="item"><div class="item-top"><span class="title">${esc(x.title)}</span>${badge(x.priority)}</div><div class="meta">${esc(x.project)} · ${esc(x.next)}</div></div>`).join('')}</div></div><div class="panel"><h2>⚠ Rozhodnout</h2><div class="list">${DATA.approvals.slice(0,6).map(x=>`<div class="item"><div class="item-top"><span class="title">${esc(x.title)}</span>${badge(x.status)}</div><div class="meta">${esc(x.amount||'')} ${esc(x.note||'')}</div></div>`).join('')}</div></div></div><div class="note"><b>Bezpečnost:</b> data se dešifrují pouze v tomto prohlížeči. Cockpit je read-only; e-mail, Slack, objednávka, platba, podpis ani externí odeslání nejsou implementovány.</div>`}
+function render(id){if(id==='home')return renderHome();setActive(id);$('#dashboard').innerHTML='';const map={projects:['Projekty','projects'],tasks:['Úkoly','tasks'],finance:['Finance','finance'],approvals:['Schválení','approvals'],pnl:['Project P&L / EAC','pnl'],cash:['13týdenní cashflow','cashflow'],procurement:['Procurement','procurement'],changes:['Change Orders / vícepráce','changes'],daily:['Daily Log','daily'],risks:['Rizika','risks'],validation:['Validation Matrix','validation'],decisions:['Decision Log','decisions'],vendors:['Vendor Scorecard','vendors'],system:['System Health','system'],crm:['CRM','crm']};if(id==='modules')return renderModules();const [title,key]=map[id]||['Přehled',id];renderTable(title,DATA[key]||[])}
+function renderTable(title,rows){const keys=rows.length?Object.keys(rows[0]):[];$('#content').innerHTML=`<div class="section-title"><div><h2>${esc(title)}</h2><p>Reálný ověřený snapshot z ŘEDITELSTVÍ ONE.</p></div><span class="badge locked">READ ONLY</span></div><div class="panel table-wrap">${rows.length?`<table><thead><tr>${keys.map(k=>`<th>${esc(k)}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${keys.map(k=>`<td>${k.toLowerCase().includes('status')||k.toLowerCase().includes('priority')?badge(r[k]):esc(r[k])}</td>`).join('')}</tr>`).join('')}</tbody></table>`:'<div class="muted">V tomto snapshotu zatím nejsou detailní řádky; modul je veden v ONE.</div>'}</div><div class="footer-note">Zdroj: ŘEDITELSTVÍ ONE · VERIFY / PARTIAL / CONDITIONAL nejsou potvrzený finální stav.</div>`}
+function renderModules(){setActive('modules');$('#content').innerHTML=`<div class="section-title"><div><h2>Kompletní systém</h2><p>41 modulů pod jedním zdrojem pravdy.</p></div></div><div class="module-grid">${DATA.modules.map(m=>`<div class="module"><b>${esc(m.id)} · ${esc(m.name)}</b><small>${esc(m.purpose)}</small></div>`).join('')}</div>`}
+$('#login').classList.remove('hidden');
