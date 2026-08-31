@@ -1,0 +1,1 @@
+GENESIS ONE OS parallel cockpit V2 deployment marker 2026-08-31. Production main is untouched.
